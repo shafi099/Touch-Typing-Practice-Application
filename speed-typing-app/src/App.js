@@ -10,6 +10,8 @@ function App() {
   const [inputWord, setInputWord] = useState('');
   const [wordIndex, setWordIndex] = useState(0);
   const [correct, setCorrect] = useState(0);
+  const [charIndex, setCharIndex]=useState(-1)
+  const [char,setChar]=useState('')
   const [inCorrect, setInCorrect] = useState(0);
   const [status, setStatus] = useState('start');
 
@@ -21,7 +23,10 @@ function App() {
       setCorrect(0);
       setInCorrect(0);
       setStatus('enable')
+      setCharIndex(-1)
+      setChar('')
     }
+
 
     if (status === 'start') {
       setStatus('enable');
@@ -48,10 +53,21 @@ function App() {
   };
 
   const handleInput = (event) => {
+    console.log(event.key)
     if (event.key === ' ') {
+      console.log(event.key)
       checkMatch();
       setInputWord('');
       setWordIndex(wordIndex + 1);
+      setCharIndex(-1);
+    }
+    else if(event.key==='Backspace'){
+      setCharIndex(charIndex-1)
+      setChar('')
+    }
+    else{
+      setCharIndex(charIndex+1)
+      setChar(event.key)
     }
   };
 
@@ -70,6 +86,21 @@ function App() {
   //   setStatus('start')
   //   startTimer()
   // }
+const getCharClass= (wordInd, CharInd,character)=>{
+  if(wordInd == wordIndex  && CharInd == charIndex && char && status!='disable'){
+    if (character==char){
+      return 'has-background-success'
+    }
+    else{
+      return 'has-background-danger'
+    }
+  }else if(wordInd===wordIndex && charIndex>=words[wordIndex].length){
+    return 'has-background-danger'
+  }
+
+}
+
+
   return (
     <div className="App">
       <div className='section'>
@@ -104,7 +135,7 @@ function App() {
                   <span key={i}>
                     <span>
                       {word.split('').map((char, idx) => (
-                        <span key={idx}>{char}</span>
+                        <span className={getCharClass(i,idx,char)} key={idx}>{char}</span>
                       ))}
                     </span>
                     <span> </span>
