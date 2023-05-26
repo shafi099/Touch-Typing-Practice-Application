@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import randomWords from 'random-words';
+import { Howl } from 'howler';
+import './App.css'
 
 const wordNums = 200;
-const seconds = 10;
+const seconds = 60;
+
+const TypingSound = new Howl({
+  src: ['typing-sound.mp3'], // Replace with the URL of your typing sound file
+  volume: 1, // Adjust the volume as needed
+});
 
 function App() {
   const [words, setWords] = useState([]);
@@ -10,23 +17,21 @@ function App() {
   const [inputWord, setInputWord] = useState('');
   const [wordIndex, setWordIndex] = useState(0);
   const [correct, setCorrect] = useState(0);
-  const [charIndex, setCharIndex]=useState(-1)
-  const [char,setChar]=useState('')
+  const [charIndex, setCharIndex] = useState(-1);
+  const [char, setChar] = useState('');
   const [inCorrect, setInCorrect] = useState(0);
   const [status, setStatus] = useState('start');
 
   const startTimer = () => {
     if (status === 'disable') {
-      
       setWords(generateWords());
       setWordIndex(0);
       setCorrect(0);
       setInCorrect(0);
-      setStatus('enable')
-      setCharIndex(-1)
-      setChar('')
+      setStatus('enable');
+      setCharIndex(-1);
+      setChar('');
     }
-
 
     if (status === 'start') {
       setStatus('enable');
@@ -53,28 +58,25 @@ function App() {
   };
 
   const handleInput = (event) => {
-    console.log(event.key)
     if (event.key === ' ') {
-      console.log(event.key)
       checkMatch();
       setInputWord('');
       setWordIndex(wordIndex + 1);
       setCharIndex(-1);
-    }
-    else if(event.key==='Backspace'){
-      setCharIndex(charIndex-1)
-      setChar('')
-    }
-    else{
-      setCharIndex(charIndex+1)
-      setChar(event.key)
+      TypingSound.play();
+    } else if (event.key === 'Backspace') {
+      setCharIndex(charIndex - 1);
+      setChar('');
+      TypingSound.play();
+    } else {
+      setCharIndex(charIndex + 1);
+      setChar(event.key);
     }
   };
 
   const checkMatch = () => {
     const wordToCompare = words[wordIndex];
     const doesItMatch = wordToCompare === inputWord.trim();
-    console.log(doesItMatch);
     if (doesItMatch) {
       setCorrect(correct + 1);
     } else {
@@ -82,24 +84,17 @@ function App() {
     }
   };
 
-  // const HandleRetry = () => {
-  //   setStatus('start')
-  //   startTimer()
-  // }
-const getCharClass= (wordInd, CharInd,character)=>{
-  if(wordInd == wordIndex  && CharInd == charIndex && char && status!='disable'){
-    if (character==char){
-      return 'has-background-success'
+  const getCharClass = (wordInd, CharInd, character) => {
+    if (wordInd === wordIndex && CharInd === charIndex && char && status !== 'disable') {
+      if (character === char) {
+        return 'has-background-success';
+      } else {
+        return 'has-background-danger';
+      }
+    } else if (wordInd === wordIndex && charIndex >= words[wordIndex].length) {
+      return 'has-background-danger';
     }
-    else{
-      return 'has-background-danger'
-    }
-  }else if(wordInd===wordIndex && charIndex>=words[wordIndex].length){
-    return 'has-background-danger'
-  }
-
-}
-
+  };
 
   return (
     <div className="App">
@@ -112,19 +107,16 @@ const getCharClass= (wordInd, CharInd,character)=>{
         <input disabled={status === 'disable'} type='text' className='input' onKeyDown={handleInput} value={inputWord} onChange={(event) => setInputWord(event.target.value)} />
       </div>
       <div className='section'>
-
-       {status ==='start' && (
-        <button className='button is-false is-fullwidth' onClick={() => startTimer()}>
-          Start
-        </button>
-       )} 
-
-{status ==='disable' && (
-        <button className='button is-false is-fullwidth' onClick={() =>  window.location.reload()}>
-          Retry
-        </button>
-       )} 
-
+        {status === 'start' && (
+          <button className='button is-false is-fullwidth' onClick={() => startTimer()}>
+            Start
+          </button>
+        )}
+        {status === 'disable' && (
+          <button className='button is-false is-fullwidth' onClick={() => window.location.reload()}>
+            Retry
+          </button>
+        )}
       </div>
       {status === 'enable' && (
         <div className='section'>
@@ -135,7 +127,9 @@ const getCharClass= (wordInd, CharInd,character)=>{
                   <span key={i}>
                     <span>
                       {word.split('').map((char, idx) => (
-                        <span className={getCharClass(i,idx,char)} key={idx}>{char}</span>
+                        <span className={getCharClass(i, idx, char)} key={idx}>
+                          {char}
+                        </span>
                       ))}
                     </span>
                     <span> </span>
@@ -146,7 +140,6 @@ const getCharClass= (wordInd, CharInd,character)=>{
           </div>
         </div>
       )}
-
       {status === 'disable' && (
         <div className='section'>
           <div className='columns'>
