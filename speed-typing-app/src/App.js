@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import randomWords from 'random-words';
-import { Howl } from 'howler';
 import './App.css'
 import Contact from './Contact';
 import sound from './soundPlay.mp3';
 import Feedback from './Feedback'
-// import contact from './Contact';
-// const wordNums = 200;
-// const seconds = 10;
+
 
 
 
@@ -23,6 +20,8 @@ function App() {
   const [char, setChar] = useState('');
   const [inCorrect, setInCorrect] = useState(0);
   const [status, setStatus] = useState('start');
+
+ 
 
 const play = () =>{
   new Audio(sound).play()
@@ -122,11 +121,10 @@ const play = () =>{
     setWordNums(wordValue);
   };
 
-  const handleStop = () =>{
-    setStatus('disable');
-            // clearInterval(time);
-            setInputWord('');
-  }
+  // const handleStop = () =>{
+  //   setStatus('disable');
+  //           setInputWord('');
+  // }
 
   return (
     <>
@@ -135,8 +133,11 @@ const play = () =>{
           <h6>W E L C O M E  T O , </h6>
           <span className='title'>word sprint</span>
         </span>
-        <span>
-          <Contact />
+        <span class='removeContact'>
+          {/* {windowWidth<500 && ( */}
+            <Contact />
+          {/* )} */}
+          
         </span>
       </div>
 
