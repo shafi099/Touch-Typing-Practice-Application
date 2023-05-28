@@ -1,14 +1,14 @@
-html {
-  background-color: #35333A;
-  
-  /* background-image: linear-gradient(to right top, #161618, #1b1b1e, #212124, #27262b, #2d2c31, #323137, #38363d, #3e3b43, #45414a, #4b4751, #524d58, #59535f); */
-}
+
 @font-face {
   font-family: juliet;
   src: url(Julietta-Messie.otf);
 }
 body{
   padding-top: 90px;
+  background-color: #202022;
+  /* background-image: linear-gradient(to right top, #161618, #1b1b1e, #212124, #27262b, #2d2c31, #323137, #38363d, #3e3b43, #45414a, #4b4751, #524d58, #59535f); 
+  background-image: linear-gradient(to right top, #161618, #171718, #181818, #181819, #191919, #1b1b1c, #1e1e1f, #202022, #252528, #2a292e, #2f2e34, #35333a);
+background-image: linear-gradient(to top, #161618, #171718, #181818, #181819, #191919, #1b1b1c, #1e1e1f, #202022, #252528, #2a292e, #2f2e34, #35333a); */
 }
 @media screen and (min-width: 640px) {
 .topnav{
@@ -111,6 +111,13 @@ body{
   color:lavenderblush ;
   font-weight: 900;
   text-shadow: 1px 3px 0px #161618;
+}
+.selectTimeWord span{
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap:8px
 }
 .inputword{
   border-radius:5px;
@@ -297,6 +304,22 @@ font-family: 'Nunito Sans', sans-serif;
 }
 .created a:hover{
   font-weight: bold;
+}
+.contacticonportion{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap:2%;
+  margin-top:14px;
+}
+.contacticonportion a img{
+  width:35px;height:35px;
+  filter: invert(1) opacity(0.75);
+  transition: all 0.2s ease;
+}
+.contacticonportion a img:hover{
+  transform: scale(1.2);
 }
 .HowToPlay{
   display: flex;
@@ -515,10 +538,10 @@ font-family: 'Nunito Sans', sans-serif;
   }
   .selectTimeWord{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap:2%;
+    gap:24px;
     margin-top:3%;
     font-size: 14px;
     font-family: 'Space Grotesk', sans-serif; 
@@ -526,6 +549,13 @@ font-family: 'Nunito Sans', sans-serif;
     color:lavenderblush ;
     font-weight: 900;
     text-shadow: 1px 3px 0px #161618;
+  }
+  .selectTimeWord span{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap:10px;
   }
   .inputword{
     border-radius:5px;
@@ -587,7 +617,7 @@ font-family: 'Nunito Sans', sans-serif;
    
   }
   .inputSection input{
-    width:60%;
+    width:72%;
     padding:10px;
     text-align: center;
     border-radius: 20px;
@@ -713,6 +743,18 @@ font-family: 'Nunito Sans', sans-serif;
   }
   .created a:hover{
     font-weight: bold;
+  }
+  .contacticonportion{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap:10%;
+    margin-top:14px;
+  }
+  .contacticonportion a img{
+    width:25px;height:25px;
+    filter: invert(1) opacity(0.75);
   }
   .HowToPlay{
     display: flex;

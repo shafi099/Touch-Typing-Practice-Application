@@ -7,7 +7,7 @@ const Feedback = () => {
         <>
             <footer className="Feedback">
                 <Contact />
-                <p>Share Your Feedback Here</p>
+                <p>Suggest Improvements</p>
                 <form action="https://getform.io/f/71066576-9c3c-4fa1-8909-a2a00b969f9a" method="POST">
                     <div>
                         {/* <label htmlFor="name">Name:</label> */}

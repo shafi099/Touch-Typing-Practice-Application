@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import randomWords from 'random-words';
 import './App.css'
-import Contact from './Contact';
 import sound from './soundPlay.mp3';
-import Feedback from './Feedback'
-
-
-
+import spacebar from './spacebar.mp3'
+import Feedback from './components/Feedback'
+import TopNav from './components/TopNav'
+import Timer from './components/Timer'
+import ContactIcon from './components/ContactIcon'
 
 function App() {
   const [wordNums, setWordNums] = useState(200);
@@ -20,14 +20,20 @@ function App() {
   const [char, setChar] = useState('');
   const [inCorrect, setInCorrect] = useState(0);
   const [status, setStatus] = useState('start');
+  const [isChecked, setIsChecked] = useState(true);
 
- 
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
 
-const play = () =>{
-  new Audio(sound).play()
+
+  const Normalplay = () => {
+    new Audio(sound).play()
+  }
+
+const Spacebar = () => {
+  new Audio(spacebar).play()
 }
-
-
   const startTimer = () => {
     if (status === 'disable') {
       setWords(generateWords());
@@ -70,21 +76,25 @@ const play = () =>{
   };
 
   const handleInput = (event) => {
-    play();
+    
     if (event.key === ' ') {
       checkMatch();
       setInputWord('');
       setWordIndex(wordIndex + 1);
       setCharIndex(-1);
+      if(isChecked){ Spacebar() }
       
+
     } else if (event.key === 'Backspace') {
       setCharIndex(charIndex - 1);
       setChar('');
+      if(isChecked){Normalplay();}
       
+
     } else {
       setCharIndex(charIndex + 1);
       setChar(event.key);
-      
+      if(isChecked){Normalplay();}
     }
   };
 
@@ -128,41 +138,15 @@ const play = () =>{
 
   return (
     <>
-      <div className='topnav'>
-        <span className='topnavtext'>
-          <h6>W E L C O M E  T O , </h6>
-          <span className='title'>word sprint</span>
-        </span>
-        <span class='removeContact'>
-          {/* {windowWidth<500 && ( */}
-            <Contact />
-          {/* )} */}
-          
-        </span>
-      </div>
+    <TopNav/>
 
 
-      <div className='timer'>
-        {status === 'enable' && (
-          <span className='timerText'>Time left</span>)}
-        {(status === 'enable' || status === 'start') && (
-          <>
-            <span className='timerCount'>{timer}</span>
-
-            <span className='timerText'>seconds</span>
-          </>)}
-        {status === 'disable' && (
-          <>
-            <span className='Oops'>Oops, Time Up</span>
-
-            <span className='timerText'>Check your results, and hit retry</span>
-          </>)}
-      </div>
    
-
+          <Timer status={status} timer={timer} />
+      
       {status === 'enable' && (
         <div className='inputSection'>
-          <input placeholder='Type Here' disabled={status === 'disable'} type='text' onKeyDown={handleInput} value={inputWord} onChange={(event) => setInputWord(event.target.value)} />
+          <input placeholder='Type word here and hit spacebar' disabled={status === 'disable'} type='text' onKeyDown={handleInput} value={inputWord} onChange={(event) => setInputWord(event.target.value)} />
         </div>
 
       )}
@@ -179,30 +163,35 @@ const play = () =>{
             <span>Words Count : </span>
             <input className='inputword' type='number' defaultValue={wordNums} value={wordNums} onChange={wordNumChange} />
           </span>
+          <span>
+            <span>Keyboard Sound : </span>
+            <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
+            <label for="on"> ON</label>
+          </span>
         </div>
       )}
 
 
       {status === 'enable' && (
-      <div className='randomWords'>
-      {words.map((word, i) => (
-        <span key={i}>
-          {word.split('').map((char, idx) => (
-            <span className={getCharClass(i, idx, char)} key={idx}>
-              {char}
+        <div className='randomWords'>
+          {words.map((word, i) => (
+            <span key={i}>
+              {word.split('').map((char, idx) => (
+                <span className={getCharClass(i, idx, char)} key={idx}>
+                  {char}
+                </span>
+              ))}
+              <span> </span>
             </span>
           ))}
-          <span> </span>
-        </span>
-      ))}
-    </div>
-    )}
-    
-{status ==='enable' && (
-  <div className='buttonStop'>
-  <button onClick={() => window.location.reload()}>click here to stop</button></div>
+        </div>
+      )}
 
-)}
+      {status === 'enable' && (
+        <div className='buttonStop'>
+          <button onClick={() => window.location.reload()}>click here to stop</button></div>
+
+      )}
       <div className='buttonStart'>
         {status === 'start' && (<>
           <span>Set countdown and number of words, then hit Start</span>
@@ -210,95 +199,96 @@ const play = () =>{
             click to start
           </button></>
         )}
-      
+
       </div>
-    
+
       {status === 'disable' && (
         <div className='Result'>
-        <div className='resultportion'>
-          <p className='resultText'>Words Per Minute : </p>
-          <p className='ResultValue'>{correct + inCorrect}</p>
+          <div className='resultportion'>
+            <p className='resultText'>Words Per Minute : </p>
+            <p className='ResultValue'>{correct + inCorrect}</p>
+          </div>
+          <div className='resultportion'>
+            <p className='resultText'>Accuracy : </p>
+            <p className='ResultValue'>{Math.round((correct / (correct + inCorrect)) * 100)}%</p>
+          </div>
         </div>
-        <div className='resultportion'>
-          <p  className='resultText'>Accuracy : </p>
-          <p className='ResultValue'>{Math.round((correct / (correct + inCorrect)) * 100)}%</p>
-        </div>
-      </div>
       )}
-         {status === 'disable' && (
+      {status === 'disable' && (
         <div className='Result'>
-        <div className='resultportion'>
-          <p className='resultText'>Correct Words : </p>
-          <p className='ResultValue'>{correct}</p>
+          <div className='resultportion'>
+            <p className='resultText'>Correct Words : </p>
+            <p className='ResultValue'>{correct}</p>
+          </div>
+          <div className='resultportion'>
+            <p className='resultText'>Incorrect words : </p>
+            <p className='ResultValue'>{inCorrect}</p>
+          </div>
         </div>
-        <div className='resultportion'>
-          <p  className='resultText'>Incorrect words : </p>
-          <p className='ResultValue'>{inCorrect}</p>
-        </div>
-      </div>
       )}
-        {status === 'disable' && (
-          <div className='buttonRetry'>
+      {status === 'disable' && (
+        <div className='buttonRetry'>
           <button onClick={() => window.location.reload()}>click here to retry</button></div>
-        
-        )}
-         {(status === 'start' || status === 'disable') && (<>
-        <div className='created'>
-        <a href='https://shafi-portfolio.netlify.app/' target='_blank' rel="noopener noreferrer"><span>© by Shafi Shaik</span></a>
-</div>
-  
-</>
-)}
-      {status==='start' && (
 
-<div className='about'>
-<p>
-Word Sprint is a fun and interactive game that tests your typing speed and accuracy. The objective of the game is to type a series of words as quickly and accurately as possible within a specified time limit. It's a great way to improve your typing skills, enhance your speed, and challenge yourself to become a faster typist.
-
-</p>
-<p>
-    So, get ready to test your typing skills, challenge yourself, and have fun with the Speed Typing Game!
-  </p></div>
       )}
-     
-        
-    {status==='start' && (
- <div className='HowToPlay'>
+      {(status === 'start' || status === 'disable') && (<>
+        <div className='created'>
+          <a href='https://shafi-portfolio.netlify.app/' target='_blank' rel="noopener noreferrer"><span>© by Shafi Shaik</span></a>
+          <ContactIcon/>
+        </div>
 
- 
- <p>
-   How to Play:
-   <ol>
-     <li>Start the Game: When you start the game, you will see a countdown timer and a random set of words displayed on the screen.</li>
-     <li>Typing Words: Begin typing the displayed words as fast as you can. Each word should be entered without any errors and followed by a space.</li>
-     <li>Accuracy and Speed: The game will track your typing accuracy and speed. Correctly typed words will increase your score, while incorrect entries will count as errors.</li>
-     <li>Time Limit: The game has a specific time limit within which you need to type as many words as possible. Try to complete as many words as you can before the timer runs out.</li>
-     <li>Feedback and Results: After the game ends, you will receive feedback on your performance. This includes your words per minute (WPM) score and accuracy percentage.</li>
-     <li>Retry: If you want to improve your score or challenge yourself again, you can retry the game and aim for a higher WPM and better accuracy.</li>
-   </ol>
- </p>
+      </>
+      )}
+      {status === 'start' && (
 
-</div>
-    )}
-       
-{status === 'disable' && (
-  <div className='HowToPlay'>
-<p>
-    Tips for Success:
-    <ul>
-      <li>1.Focus on accuracy: It's better to type accurately than to make errors in an attempt to type quickly. Accuracy is key.</li>
-      <li>2.Practice regularly: The more you practice, the better you'll become. Regularly playing the speed typing game can significantly improve your typing skills over time.</li>
-      <li>3.Use all fingers: Utilize proper typing techniques and try to use all your fingers to type. This will help you type faster and more efficiently.</li>
-      <li>4.Maintain a good posture: Sit upright and maintain a comfortable typing posture to avoid any discomfort or strain while typing.</li>
-    </ul>
-  </p>
- </div>
-)}
+        <div className='about'>
+          <p>
+            Word Sprint is a fun and interactive game that tests your typing speed and accuracy. The objective of the game is to type a series of words as quickly and accurately as possible within a specified time limit. It's a great way to improve your typing skills, enhance your speed, and challenge yourself to become a faster typist.
 
-  <Feedback/>
+          </p>
+          <p>
+            So, get ready to test your typing skills, challenge yourself, and have fun with the Speed Typing Game!
+          </p></div>
+      )}
+
+
+      {status === 'start' && (
+        <div className='HowToPlay'>
+
+
+          <p>
+            How to Play:
+            <ol>
+              <li>Start the Game: When you start the game, you will see a countdown timer and a random set of words displayed on the screen.</li>
+              <li>Typing Words: Begin typing the displayed words as fast as you can. Each word should be entered without any errors and followed by a space.</li>
+              <li>Accuracy and Speed: The game will track your typing accuracy and speed. Correctly typed words will increase your score, while incorrect entries will count as errors.</li>
+              <li>Time Limit: The game has a specific time limit within which you need to type as many words as possible. Try to complete as many words as you can before the timer runs out.</li>
+              <li>Feedback and Results: After the game ends, you will receive feedback on your performance. This includes your words per minute (WPM) score and accuracy percentage.</li>
+              <li>Retry: If you want to improve your score or challenge yourself again, you can retry the game and aim for a higher WPM and better accuracy.</li>
+            </ol>
+          </p>
+
+        </div>
+      )}
+
+      {status === 'disable' && (
+        <div className='HowToPlay'>
+          <p>
+            Tips for Success:
+            <ul>
+              <li>1.Focus on accuracy: It's better to type accurately than to make errors in an attempt to type quickly. Accuracy is key.</li>
+              <li>2.Practice regularly: The more you practice, the better you'll become. Regularly playing the speed typing game can significantly improve your typing skills over time.</li>
+              <li>3.Use all fingers: Utilize proper typing techniques and try to use all your fingers to type. This will help you type faster and more efficiently.</li>
+              <li>4.Maintain a good posture: Sit upright and maintain a comfortable typing posture to avoid any discomfort or strain while typing.</li>
+            </ul>
+          </p>
+        </div>
+      )}
+
+      <Feedback />
     </>
   );
-  
+
 }
 
 export default App;
